@@ -5,6 +5,7 @@ import csv
 import re
 from datetime import datetime
 from collections import Counter
+import pandas as pd
 import matplotlib.pyplot as plt
 
 print("Program start at = ", datetime.now().time())
@@ -49,6 +50,11 @@ for x in docs_makanan:
     if x[1] != "":
         docs_makanan_with_bahan.append(x)
 
+# print(docs_makanan_with_bahan[:3])
+splitted_docs_makanan_with_bahan = []
+for doc in docs_makanan_with_bahan:
+    splitted_docs_makanan_with_bahan.append(' '.join(doc).split())
+
 semua_bahan = []
 bahan_unik = []
 
@@ -64,6 +70,7 @@ for bahan in semua_bahan:
         bahan_unik.append(bahan)
 
 print(len(bahan_unik))
+# print(bahan_unik)
 # for x in docs_makanan:
 #     if x == None:
 #         docs_makanan.remove(x)
@@ -71,7 +78,9 @@ print(len(bahan_unik))
     #     docs_makanan.remove(x)
 
 # print(len(docs_makanan))
+incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
+print(pd.DataFrame(incidence_matrix, index = bahan_unik))
 
-
+# print(unik)
 
 print("Program end at = ", datetime.now().time())
