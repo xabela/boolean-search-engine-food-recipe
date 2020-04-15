@@ -68,19 +68,54 @@ for bahan in semua_bahan:
 
 incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
 inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
-# print(inc_pandas)
-# print(list(inc_pandas.values[:, 0])) #dokumen pertama tok
-# print(list(inc_pandas.values[0, :])) #token pertama tok
+print(inc_pandas)
+print(list(inc_pandas.values[:,0])) #dokumen pertama tok
+print(list(inc_pandas.values[0, :])) #token pertama tok
+# print(incidence_matrix[:0])
 
-#Jadiin fail csv
-# inc_pandas.to_csv('data_tes.csv')
+tes = input('insert your query: ')
+inside_parentheses = tes[tes.find("(")+1:tes.find(")")]
+inside_token = inside_parentheses.split(" ")
 
-#tes program
-tes ='ijo' and 'ayam'
-tes_A=splitted_docs_makanan_with_bahan
-for i in range(len(splitted_docs_makanan_with_bahan)):
-    if "ayam" in tes_A[i][:] and 'ijo' in tes_A[i][:]:
-        print(splitted_docs_makanan_with_bahan[i][:])
+inside_keyword = []
+inside_operator = []
 
+for words in inside_token:
+    if words.lower() != "and" and words.lower() != "or" and words.lower() != "not":
+        inside_keyword.append(words.lower())
+    else:
+        inside_operator.append(words.lower())
 
+query_without_parentheses = re.sub("[\(\[].*?[\)\]]", "", tes)
+query_token = query_without_parentheses.split(" ")
+
+outside_keyword = []
+outside_operator = []
+
+for words in query_token:
+    if words.lower() != "and" and words.lower() != "or" and words.lower() != "not":
+        outside_keyword.append(words.lower())
+    else:
+        outside_operator.append(words.lower())
+
+for words in outside_operator:
+    for i in range(len(docs_makanan_with_bahan)):
+        index_kata_1 = bahan_unik.index(outside_keyword[0].lower())
+        index_kata_2 = bahan_unik.index(outside_keyword[1].lower())
+        if words.lower() == "and":
+            if list(inc_pandas.values[:,i])[index_kata_1] == 1 and list(inc_pandas.values[:,i])[index_kata_2] == 1:
+                print(docs_makanan_with_bahan[i])
+        elif words.lower() == "or":
+            if list(inc_pandas.values[:,i])[index_kata_1] == 1 or list(inc_pandas.values[:,i])[index_kata_2] == 1:
+                print(docs_makanan_with_bahan[i])
+        # elif words.lower() == "not":
+        #     if outside_keyword[0] in splitted_docs_makanan_with_bahan[i][:] and outside_keyword[1] not in splitted_docs_makanan_with_bahan[i][:]:
+        #         print(splitted_docs_makanan_with_bahan[i][:])
+
+# print(keyword)
+# print(operator)
+# tes_A = splitted_docs_makanan_with_bahan
+# for i in range(len(splitted_docs_makanan_with_bahan)):
+#     if tes in tes_A[i][:]:
+#         print(splitted_docs_makanan_with_bahan[i][:])
 print("Program end at = ", datetime.now().time())
