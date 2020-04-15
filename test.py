@@ -55,19 +55,23 @@ splitted_docs_makanan_with_bahan = []
 for doc in docs_makanan_with_bahan:
     splitted_docs_makanan_with_bahan.append(' '.join(doc).split())
 
-semua_bahan = []
+semua_bahan = [word for doc in splitted_docs_makanan_with_bahan for word in doc]
 bahan_unik = []
 
-for x in docs_makanan_with_bahan:
-    bahan_array = x[1].split(" ")
-    for words in bahan_array:
-        semua_bahan.append(words)
+
+# for x in docs_makanan_with_bahan:
+#     bahan_array = x[1].split(" ")
+#     for words in bahan_array:
+#         semua_bahan.append(words)
+
+print(semua_bahan[:10])
 
 print(len(semua_bahan))
 
 for bahan in semua_bahan:
     if bahan not in bahan_unik:
         bahan_unik.append(bahan)
+print(bahan_unik[:10])
 
 print(len(bahan_unik))
 # print(bahan_unik)
