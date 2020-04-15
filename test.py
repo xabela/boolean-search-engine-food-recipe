@@ -42,49 +42,34 @@ with open('makanan.csv', 'r') as read_obj:
 
 docs_makanan = list(filter(None,docs_makanan))
 
-print(len(docs_makanan))
-
-docs_makanan_with_bahan = []
-
-for x in docs_makanan:
-    if x[1] != "":
-        docs_makanan_with_bahan.append(x)
-
+# print(len(docs_makanan))
+# for x in docs_makanan:
+#     if x[1] != "":
+#         docs_makanan_with_bahan.append(x)
+# print(docs_makanan[:3])
 # print(docs_makanan_with_bahan[:3])
+
+docs_makanan_with_bahan = [word for word in docs_makanan if word[1] != ""]
 splitted_docs_makanan_with_bahan = []
 for doc in docs_makanan_with_bahan:
     splitted_docs_makanan_with_bahan.append(' '.join(doc).split())
 
 semua_bahan = [word for doc in splitted_docs_makanan_with_bahan for word in doc]
+
+# print(semua_bahan[:10])
+# print(len(semua_bahan))
+
 bahan_unik = []
-
-
-# for x in docs_makanan_with_bahan:
-#     bahan_array = x[1].split(" ")
-#     for words in bahan_array:
-#         semua_bahan.append(words)
-
-print(semua_bahan[:10])
-
-print(len(semua_bahan))
-
 for bahan in semua_bahan:
     if bahan not in bahan_unik:
         bahan_unik.append(bahan)
-print(bahan_unik[:10])
+# print(bahan_unik[:10])
+# print(len(bahan_unik))
 
-print(len(bahan_unik))
-# print(bahan_unik)
-# for x in docs_makanan:
-#     if x == None:
-#         docs_makanan.remove(x)
-    # elif x[1] == "":
-    #     docs_makanan.remove(x)
-
-# print(len(docs_makanan))
 incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
-print(pd.DataFrame(incidence_matrix, index = bahan_unik))
-
-# print(unik)
+inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
+print(inc_pandas)
+print(list(inc_pandas.values[:, 0])) #dokumen pertama tok
+print(list(inc_pandas.values[0, :])) #token pertama tok
 
 print("Program end at = ", datetime.now().time())
