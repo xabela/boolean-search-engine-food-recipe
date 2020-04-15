@@ -56,9 +56,9 @@ for doc in docs_makanan_with_bahan:
 
 semua_bahan = [word for doc in splitted_docs_makanan_with_bahan for word in doc]
 
-# print(semua_bahan[:10])
+# print(semua_bahan[:])
 # print(len(semua_bahan))
-
+# print(splitted_docs_makanan_with_bahan[:2][:])
 bahan_unik = []
 for bahan in semua_bahan:
     if bahan not in bahan_unik:
@@ -68,8 +68,19 @@ for bahan in semua_bahan:
 
 incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
 inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
-print(inc_pandas)
-print(list(inc_pandas.values[:, 0])) #dokumen pertama tok
-print(list(inc_pandas.values[0, :])) #token pertama tok
+# print(inc_pandas)
+# print(list(inc_pandas.values[:, 0])) #dokumen pertama tok
+# print(list(inc_pandas.values[0, :])) #token pertama tok
+
+#Jadiin fail csv
+# inc_pandas.to_csv('data_tes.csv')
+
+#tes program
+tes ='ijo' and 'ayam'
+tes_A=splitted_docs_makanan_with_bahan
+for i in range(len(splitted_docs_makanan_with_bahan)):
+    if "ayam" in tes_A[i][:] and 'ijo' in tes_A[i][:]:
+        print(splitted_docs_makanan_with_bahan[i][:])
+
 
 print("Program end at = ", datetime.now().time())
