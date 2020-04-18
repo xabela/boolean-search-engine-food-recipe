@@ -4,7 +4,7 @@ import text_preprocessing as pp
 import csv
 import re
 from datetime import datetime
-from collections import Counter
+from collections import Counter, defaultdict
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -39,8 +39,9 @@ docs_makanan = []
 with open('makanan.csv', 'r') as read_obj:
     reader = csv.reader(read_obj)
     docs_makanan = list(reader)
-
+print(docs_makanan[:1])
 docs_makanan = list(filter(None,docs_makanan))
+print(docs_makanan[:1])
 
 # print(len(docs_makanan))
 # for x in docs_makanan:
@@ -66,12 +67,24 @@ for bahan in semua_bahan:
 # print(bahan_unik[:10])
 # print(len(bahan_unik))
 
+index = defaultdict(list)
+for i, bahan_unik in enumerate(splitted_docs_makanan_with_bahan):
+    for unik in bahan_unik:
+        index[unik].append(i)
+
+index = {a:list(set(b)) for a, b in index.items()} #incidence matrix dlm bentuk dict
+
+print(type(index))
+print(index)
+len(index)
+
+
 incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
 inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
 print(inc_pandas)
 print(list(inc_pandas.values[:,0])) #dokumen pertama tok
 print(list(inc_pandas.values[0, :])) #token pertama tok
-# print(incidence_matrix[:0])
+print(incidence_matrix[:0])
 
 tes = input('insert your query: ')
 inside_parentheses = tes[tes.find("(")+1:tes.find(")")]
