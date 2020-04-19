@@ -106,7 +106,7 @@ class Conversion:
 		return print(" ".join(self.postfix))
 
 query = "nasi and ayam not(daging or telur)"
-query2 = "(ayam and goreng)or ijo"
+query2 = "(ayam and goreng)and ijo"
 obj = Conversion(query)
 obj.infixToPostfix(query2)
 

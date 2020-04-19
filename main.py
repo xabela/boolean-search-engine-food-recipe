@@ -14,9 +14,12 @@ def retrieval(result):
     doc_makanan = soup.find_all("doc")
 
     documents = []
-    for index in result:
-        documents.append(doc_makanan[index])
-
+    if (result):
+        for index in result:
+            documents.append(doc_makanan[index])
+    else:
+        document = []
+        
     file.close()
     return documents
 
