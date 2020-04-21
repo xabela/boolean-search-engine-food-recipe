@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <title>Query Result</title>
 </head>
 
@@ -42,8 +41,8 @@
                             <img src="/static/images/food.jpg" class="card-img-top">
                             <div class="card-body">
                                 <h5 class="card-title">{{key}}</h5>
-                                <button onclick="myFunction()" class="btn btn-warning btn-block rounded" id="{{key}}"
-                                    value="{{value}}">Lihat Bahan</button>
+                                <button class="btn btn-warning btn-block rounded" id="{{key}}"
+                                    value="{{value}}" data-toggle="modal" data-target="#isiBahan">Lihat Bahan</button>
                             </div>
                         </div>
                     </div>
@@ -54,31 +53,32 @@
     </div>
 
     <!-- MODAL  -->
-    <div id="menu" class="w3-modal">
-        <div class="w3-modal-content w3-card-4 w3-animate-zoom" style="max-width:500px">
-            <div class="w3-container w3-amber">
-                <div class="nama">
-                    <h3></h3>
+    <div class="modal fade" id="isiBahan" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header nama btn-warning">
+                    <h3 class="modal-title" id="exampleModalLongTitle"></h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-            <div class="w3-container w3-text-black" style="padding-top: 20px;">
-                <h4>Bahan yang Dibutuhkan:</h4><br>
-                <div class="bahan">
-                    <p style="text-align: justify;"></p>
+                <div class="modal-body">
+                    <h4>Bahan yang Dibutuhkan:</h4><br>
+                    <div class="bahan">
+                        <p style="text-align: justify;"></p>
+                    </div>
                 </div>
-            </div>
-            <div class="w3-container w3-light-grey w3-padding">
-                <button class="w3-button w3-right w3-white w3-border"
-                    onclick="document.getElementById('menu').style.display='none'">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script>
-        function myFunction() {
-            var x = document.getElementById('menu');
-            x.style.display = 'block';
-        }
         $("button").click(function () {
             $('.nama h3').text($(this).attr("id"));
             $('.bahan p').text($(this).val());

@@ -20,8 +20,6 @@ def retrieval(result):
             doc_makanan_nama = ind.find("nama").get_text()
             doc_makanan_bahan = ind.find("bahan").get_text()
             documents.setdefault(doc_makanan_nama,doc_makanan_bahan)
-            # documents.append(doc_makanan[index])
-            # print(index)
     else:
         documents = {}
         
@@ -41,7 +39,6 @@ def upload():
 
     documents = retrieval(result)
     print(len(documents))
-    # print(result)
 
     end = time.time()
     times = end - start

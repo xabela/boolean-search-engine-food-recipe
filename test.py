@@ -18,11 +18,9 @@ print("Program start at = ", datetime.now().time())
 
 # list_of_nama = []
 # list_of_bahan = []
-docs_makanan = []
 
 # f = open('makanan.csv', 'w')
 # writer = csv.writer(f)
-
 # for makanan in doc_makanan:
 #     a = makanan.find("nama").text
 #     b = makanan.find("bahan").text
@@ -33,20 +31,13 @@ docs_makanan = []
 #     docs_makanan.append([nama, bahan])
 #     writer.writerow([nama, bahan])
 
-# print(docs_makanan)
+docs_makanan = []
 
 with open('makanan.csv', 'r') as read_obj:
     reader = csv.reader(read_obj)
     docs_makanan = list(reader)
 
 docs_makanan = list(filter(None,docs_makanan))
-
-# print(len(docs_makanan))
-# for x in docs_makanan:
-#     if x[1] != "":
-#         docs_makanan_with_bahan.append(x)
-# print(docs_makanan[:3])
-# print(docs_makanan_with_bahan[:3])
 
 docs_makanan_with_bahan = [word for word in docs_makanan if word[1] != ""]
 splitted_docs_makanan_with_bahan = []
@@ -55,24 +46,18 @@ for doc in docs_makanan_with_bahan:
 
 semua_bahan = [word for doc in splitted_docs_makanan_with_bahan for word in doc]
 
-# print(semua_bahan[:])
-# print(len(semua_bahan))
-# print(splitted_docs_makanan_with_bahan[:2][:])
 bahan_unik = []
 for bahan in semua_bahan:
     if bahan not in bahan_unik:
         bahan_unik.append(bahan)
-# print(bahan_unik[:10])
-# print(len(bahan_unik))
 
 incidence_matrix = [[int(doc.count(un) > 0) for doc in splitted_docs_makanan_with_bahan] for un in bahan_unik]
 inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
 
-
 def postfix(infix_tokens):
     
     #precendence initialization
-    precedence = {'NOT':3, 'AND':2, 'OR':1, '(':0, ')':0} 
+    prioritas = {'NOT':3, 'AND':2, 'OR':1, '(':0, ')':0} 
 
     output = []
     operator_stack = []
@@ -88,10 +73,10 @@ def postfix(infix_tokens):
                 output.append(operator)
                 operator = operator_stack.pop()
         
-        elif (token in precedence):
+        elif (token in prioritas):
             if (operator_stack):
                 current_operator = operator_stack[-1]
-                while (operator_stack and precedence[current_operator] > precedence[token]):
+                while (operator_stack and prioritas[current_operator] > prioritas[token]):
                     output.append(operator_stack.pop())
                     if (operator_stack):
                         current_operator = operator_stack[-1]
@@ -101,7 +86,7 @@ def postfix(infix_tokens):
         else:
             output.append(token.lower())
     
-    #while staack is not empty appending
+    #while stack is not empty appending
     while (operator_stack):
         output.append(operator_stack.pop())
     return output
@@ -112,7 +97,7 @@ docs_hasil_inc = []
 def AND_op(*word):
     if(len(word) == 1):
         for i in range(0, len(docs_hasil_index)):
-            # docs_list = list(inc_pandas.values[:,i])
+            docs_list = list(inc_pandas.values[:,i])
             index_kata_1 = bahan_unik.index(word[0])
             if docs_hasil_inc[i][index_kata_1] == 1:
                 docs_hasil_index.append(i)
@@ -141,25 +126,21 @@ def OR_op(*word):
                 docs_hasil_inc.append(docs_list)
                 docs_hasil_index.append(i)
 
-def NOT_op(*word):
-    # temp = []
+def NOT_op(word):
     for i in range(len(docs_makanan_with_bahan)):
         docs_list = list(inc_pandas.values[:,i])
-        index_kata_1 = bahan_unik.index(word[0])
+        index_kata_1 = bahan_unik.index(word)
         if docs_list[index_kata_1] == 0:
             docs_hasil_inc.append(docs_list)
             docs_hasil_index.append(i)
-    # return temp
 
-def OneQuery(*word):
-    # temp = []
+def OneQuery(word):
     for i in range(len(docs_makanan_with_bahan)):
         docs_list = list(inc_pandas.values[:,i])
-        index_kata_1 = bahan_unik.index(word[0])
+        index_kata_1 = bahan_unik.index(word)
         if docs_list[index_kata_1] == 1:
             docs_hasil_inc.append(docs_list)
             docs_hasil_index.append(i)
-
 
 def process_query(q):
     q = q.replace('(', '( ')
@@ -178,45 +159,46 @@ def process_query(q):
 
     if (len(postfix_queue) == 1):
         OneQuery(''.join(postfix_queue))
+    else: 
+        for i in postfix_queue:
+            if ( i!= 'AND' and i!= 'OR' and i!= 'NOT'):
+                i = i.replace('(', ' ')
+                i = i.replace(')', ' ')
+                i = i.lower()
+                results_stack.append(i)
+            elif (i=='AND'):
+                if(len(results_stack) == 0):
+                    temp = [item for item, count in collections.Counter(docs_hasil_index).items() if count > 1]
+                    docs_hasil_index.clear()
+                    for x in temp:
+                        docs_hasil_index.append(x)
+                elif(len(results_stack) == 1):
+                    word = results_stack.pop()
+                    AND_op(word)
+                else:
+                    a = results_stack.pop()
+                    b = results_stack.pop()
+                    AND_op(a, b)
+            elif (i=='OR'):
+                if(len(results_stack) == 0):
+                    temp = list(set(docs_hasil_index))
+                    docs_hasil_index.clear()
+                    for x in temp:
+                        docs_hasil_index.append(x)
 
-    for i in postfix_queue:
-        if ( i!= 'AND' and i!= 'OR' and i!= 'NOT'):
-            i = i.replace('(', ' ')
-            i = i.replace(')', ' ')
-            i = i.lower()
-            # i = dictionary_inverted.get(i)
-            results_stack.append(i)
-        elif (i=='AND'):
-            if(len(results_stack) == 0):
-                temp = [item for item, count in collections.Counter(docs_hasil_index).items() if count > 1]
-                docs_hasil_index.clear()
-                for x in temp:
-                    docs_hasil_index.append(x)
-            elif(len(results_stack) == 1):
-                word = results_stack.pop()
-                AND_op(word)
-            else:
-                a = results_stack.pop()
-                b = results_stack.pop()
-                AND_op(a, b)
-        elif (i=='OR'):
-            if(len(results_stack) == 0):
-                temp = list(set(docs_hasil_index))
-                docs_hasil_index.clear()
-                for x in temp:
-                    docs_hasil_index.append(x)
+                elif(len(results_stack) == 1):
+                    word = results_stack.pop()
+                    OR_op(word)
 
-            elif(len(results_stack) == 1):
-                word = results_stack.pop()
-                OR_op(word)
+                else:
+                    a = results_stack.pop()
+                    b = results_stack.pop()
+                    OR_op(a,b)
+            elif (i == 'NOT'):
+                c = results_stack.pop()
+                print(c)
+                NOT_op(c)
 
-            else:
-                a = results_stack.pop()
-                b = results_stack.pop()
-                OR_op(a,b)
-        elif (i == 'NOT'):
-            a = results_stack.pop()
-        #     print(a)
-            NOT_op(a)
     return docs_hasil_index
+
 print("Program end at = ", datetime.now().time())
