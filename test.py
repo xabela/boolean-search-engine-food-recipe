@@ -72,12 +72,7 @@ inc_pandas = (pd.DataFrame(incidence_matrix, index = bahan_unik))
 def postfix(infix_tokens):
     
     #precendence initialization
-    precedence = {'NOT':3, 'AND':2, 'OR':1, '(':0, ')':0}
-    # precedence['NOT'] = 3
-    # precedence['AND'] = 2
-    # precedence['OR'] = 1
-    # precedence['('] = 0
-    # precedence[')'] = 0    
+    precedence = {'NOT':3, 'AND':2, 'OR':1, '(':0, ')':0} 
 
     output = []
     operator_stack = []
@@ -181,6 +176,9 @@ def process_query(q):
     results_stack = []
     postfix_queue = postfix(query)
 
+    if (len(postfix_queue) == 1):
+        OneQuery(''.join(postfix_queue))
+
     for i in postfix_queue:
         if ( i!= 'AND' and i!= 'OR' and i!= 'NOT'):
             i = i.replace('(', ' ')
@@ -220,9 +218,5 @@ def process_query(q):
             a = results_stack.pop()
         #     print(a)
             NOT_op(a)
-        else:
-            # a = results_stack.pop()
-            OneQuery(i)
-
     return docs_hasil_index
 print("Program end at = ", datetime.now().time())
