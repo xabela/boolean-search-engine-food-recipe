@@ -13,12 +13,17 @@ def retrieval(result):
 
     doc_makanan = soup.find_all("doc")
 
-    documents = []
+    documents = {}
     if (result):
         for index in result:
-            documents.append(doc_makanan[index])
+            ind = doc_makanan[index]
+            doc_makanan_nama = ind.find("nama").get_text()
+            doc_makanan_bahan = ind.find("bahan").get_text()
+            documents.setdefault(doc_makanan_nama,doc_makanan_bahan)
+            # documents.append(doc_makanan[index])
+            # print(index)
     else:
-        document = []
+        documents = {}
         
     file.close()
     return documents
@@ -35,13 +40,13 @@ def upload():
     result = test.process_query(query)
 
     documents = retrieval(result)
-
+    print(len(documents))
     # print(result)
 
     end = time.time()
     times = end - start
 
-    return render_template('card.html', resep = documents, jlh_resep = len(documents), time = str(times) + " Seconds")
+    return render_template('card.html', resep = documents, jlh_resep = len(documents), time = str(times) + " seconds")
 
 
 if __name__ == '__main__':

@@ -132,7 +132,7 @@ def AND_op(*word):
 
 def OR_op(*word):
     if(len(word) == 1):
-        for i in range(0, len(docs_makanan_with_bahan)):
+        for i in range(0, len(docs_hasil_index)):
             docs_list = list(inc_pandas.values[:,i])
             index_kata_1 = bahan_unik.index(word[0])
             if docs_list[index_kata_1] == 1:
@@ -154,8 +154,17 @@ def NOT_op(*word):
         if docs_list[index_kata_1] == 0:
             docs_hasil_inc.append(docs_list)
             docs_hasil_index.append(i)
-            
     # return temp
+
+def OneQuery(*word):
+    # temp = []
+    for i in range(len(docs_makanan_with_bahan)):
+        docs_list = list(inc_pandas.values[:,i])
+        index_kata_1 = bahan_unik.index(word[0])
+        if docs_list[index_kata_1] == 1:
+            docs_hasil_inc.append(docs_list)
+            docs_hasil_index.append(i)
+
 
 def process_query(q):
     q = q.replace('(', '( ')
@@ -211,5 +220,9 @@ def process_query(q):
             a = results_stack.pop()
         #     print(a)
             NOT_op(a)
+        else:
+            # a = results_stack.pop()
+            OneQuery(i)
+
     return docs_hasil_index
 print("Program end at = ", datetime.now().time())
