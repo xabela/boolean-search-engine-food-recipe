@@ -7,6 +7,7 @@ import time
 
 app = Flask(__name__)
 
+result = []
 documents = {}
 len_all_docs = 0
 
@@ -31,6 +32,7 @@ def retrieval(result):
         documents = {}
         
     file.close()
+
     return documents
 
 @app.route('/')
@@ -39,15 +41,18 @@ def dictionary():
 
 @app.route("/query", methods=['POST'])
 def upload():
-    global documents
+    global documents, result
+
     start = time.time()
     query = request.form['query']
 
+    # ngehapus isi result biar pencarian sebelumnya ngga keikut
+    result.clear()
     result = test.process_query(query)
+
+    # ngehapus isi documents biar dokumen yang diretrieval ngga keikut
     documents.clear()
     documents = retrieval(result)
-
-    # print(result)
 
     end = time.time()
     times = end - start
