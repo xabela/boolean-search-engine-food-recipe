@@ -7,13 +7,20 @@ import time
 
 app = Flask(__name__)
 
+documents = {}
+len_all_docs = 0
+
 def retrieval(result):
-    file = open("Daftar-Resep-Makanan.txt", encoding="utf8")
+    file = open("Daftar-Resep-Makanan-Dengan-Bahan.txt", encoding="utf8")
     soup = BeautifulSoup(file, 'html.parser')
 
     doc_makanan = soup.find_all("doc")
 
-    documents = {}
+    global len_all_docs 
+    len_all_docs = len(doc_makanan)
+
+    global documents
+    documents.clear()
     if (result):
         for index in result:
             ind = doc_makanan[index]
@@ -32,18 +39,20 @@ def dictionary():
 
 @app.route("/query", methods=['POST'])
 def upload():
+    global documents
     start = time.time()
     query = request.form['query']
 
     result = test.process_query(query)
-
+    documents.clear()
     documents = retrieval(result)
-    print(len(documents))
+
+    # print(result)
 
     end = time.time()
     times = end - start
 
-    return render_template('card.html', resep = documents, jlh_resep = len(documents), time = str(times) + " seconds")
+    return render_template('card.html', resep = documents, jlh_resep = len(documents), time = str(times) + " Seconds", jlh_docs = len_all_docs)
 
 
 if __name__ == '__main__':
