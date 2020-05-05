@@ -36,13 +36,16 @@ docs_makanan = []
 with open('makanan.csv', 'r') as read_obj:
     reader = csv.reader(read_obj)
     docs_makanan = list(reader)
-
+# print(docs_makanan[:3])
 docs_makanan = list(filter(None,docs_makanan))
+# print(docs_makanan[:5])
 
 docs_makanan_with_bahan = [word for word in docs_makanan if word[1] != ""]
+# print(docs_makanan_with_bahan[:3])
 splitted_docs_makanan_with_bahan = []
 for doc in docs_makanan_with_bahan:
     splitted_docs_makanan_with_bahan.append(' '.join(doc).split())
+# print(splitted_docs_makanan_with_bahan[:2])
 
 semua_bahan = [word for doc in splitted_docs_makanan_with_bahan for word in doc]
 
@@ -135,12 +138,14 @@ def NOT_op(word):
             docs_hasil_index.append(i)
 
 def OneQuery(word):
-    for i in range(len(docs_makanan_with_bahan)):
+    for i in range(len(docs_makanan_with_bahan)): #banyak 1089 dokumen
         docs_list = list(inc_pandas.values[:,i])
         index_kata_1 = bahan_unik.index(word)
         if docs_list[index_kata_1] == 1:
             docs_hasil_inc.append(docs_list)
             docs_hasil_index.append(i)
+    # print(docs_hasil_inc)
+    # print(docs_hasil_index)
 
 def process_query(q):
     q = q.replace('(', '( ')
@@ -150,20 +155,21 @@ def process_query(q):
 
     for i in q:
         query.append(i)
-    for i in range(0,len(query)):
+    for i in range(len(query)):
         if ( query[i]== 'and' or query[i]== 'or' or query[i]== 'not'):
             query[i] = query[i].upper()
 
     results_stack = []
     postfix_queue = postfix(query)
+    print(postfix_queue)
 
     if (len(postfix_queue) == 1):
         OneQuery(''.join(postfix_queue))
     else: 
         for i in postfix_queue:
             if ( i!= 'AND' and i!= 'OR' and i!= 'NOT'):
-                i = i.replace('(', ' ')
-                i = i.replace(')', ' ')
+                # i = i.replace('(', ' ')
+                # i = i.replace(')', ' ')
                 i = i.lower()
                 results_stack.append(i)
             elif (i=='AND'):
@@ -196,7 +202,6 @@ def process_query(q):
                     OR_op(a,b)
             elif (i == 'NOT'):
                 c = results_stack.pop()
-                print(c)
                 NOT_op(c)
 
     return docs_hasil_index

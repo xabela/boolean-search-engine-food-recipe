@@ -45,7 +45,6 @@
                                     placeholder="Insert Your Boolean Query">
                             </div>
                             <div class="col-md-3">
-                                <!-- <input type="submit" class="btn btn-warning btn-block rounded" value="Search"> -->
                                 <button type="submit" class="btn btn-warning btn-block rounded">Search</button>
                             </div>
                         </div>
@@ -124,14 +123,17 @@
                 </div>
                 <div class="modal-eval-body" style="padding-top: 20px; text-align: center;">
                     <input type="hidden" id="jumlah_retrieval" value="{{jlh_resep}}">
-                    <input type="hidden" name="jumlah_seluruh_dokumen" value="{{jlh_docs}}">
+                    <input type="hidden" id="jumlah_seluruh_dokumen" value="{{jlh_docs}}">
                     <p>Documents Retrieved and Relevant: <p id="ret-rel"></p></p>
                     <p>Documents Retrieved and Not Relevant: <p id="ret-notrel"></p></p>
                     <p>Documents Not Retrieved and Relevant: <p>0</p></p>
+                    <p>Documents Not Retrieved and Not Relevant: <p id="notret-notrel"></p></p>
                     <h4><b>Precision :</b></h4>
                     <p id="ir-precision"></p>
                     <h4><b>Recall :</b></h4>
                     <p id="ir-recall"></p>
+                    <h4><b>F-Measure :</b></h4>
+                    <p id="f-measure"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -150,14 +152,17 @@
         });
         $(".btn-eval").click(function () {
             var docs_ret = parseInt($('#jumlah_retrieval').val());
+            var all_docs = parseInt($('#jumlah_seluruh_dokumen').val());
             var irrel = parseInt($('#form-irr').val());
             var rel = parseInt(docs_ret - irrel);
             var prec = (rel / (rel + irrel)) * 100;
             var rec = (rel / (rel + 0)) * 100;
             $('#ret-rel').text(rel);
             $('#ret-notrel').text(irrel);
+            $('#notret-notrel').text((all_docs - docs_ret));
             $('#ir-precision').text(prec + " %");
             $('#ir-recall').text(rec + " %");
+            $('#f-measure').text((2*rec*prec)/(rec+prec));
         });
 
         var mybutton = document.getElementById("myBtn");

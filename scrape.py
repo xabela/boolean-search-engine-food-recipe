@@ -1,30 +1,19 @@
-# from selenium import webdriver
 import requests
 from bs4 import BeautifulSoup
-import csv
-import pandas as pd
 import numpy as np
-from datetime import datetime
-import numpy as np
-
-from time import sleep
-from random import randint
-
-# driver = webdriver.PhantomJS()
 
 pages = np.arange(1, 9, 1)
-# nama_makanan = []
-# resep_makanan = []
-# gambar_makanan = []
+
 
 norut = 1
 for page in pages:
 
-    URL = "https://resepkoki.co/category/resep-masakan-khas/page/" + str(page)
+    URL = "https://resepkoki.co/category/ayam/page/" + str(page)
     r = requests.get(URL)
 
     soup = BeautifulSoup(r.content, 'html.parser')
     weblinks = soup.find_all('div', class_="gr-i")
+    # print(weblinks)
 
     pglinks = []
 
@@ -34,7 +23,7 @@ for page in pages:
 
         # print(pglinks)
 
-        file = open('Daftar-Resep-Makanan-Ayam.txt', 'a+')
+        file = open('Daftar-Resep-Makanan-Makanan.txt', 'a+')
 
     for link in pglinks:
         partext = []
@@ -54,12 +43,10 @@ for page in pages:
         for x in bahan:
             if x.find_parent("ul"):
                 partext.append(x.get_text())
-
-    # sleep(randint(2,10))
             
         new_recipe = soup.new_tag('DOC')
         id_makanan = soup.new_tag('ID')
-        id_makanan.string = "MASAKAN KHAS " + str(norut)
+        id_makanan.string = "AYAM " + str(norut)
         link_gambar = soup.new_tag('LINK')
         link_gambar.string = gambar
         nama_makanan = soup.new_tag('NAMA')
